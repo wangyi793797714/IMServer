@@ -12,9 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-
 import server.dao.TestMapper;
 import server.util.Util;
 import vo.ChatRoom;
@@ -26,10 +23,7 @@ import vo.RoomChild;
 public class ChatServerHandler extends SimpleChannelInboundHandler<Content> {
 
     public static ChannelGroup channels = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
-    // public static List<OnlineFriends> onlineUser = new
-    // ArrayList<OnlineFriends>();
     public static Map<Integer, OnlineFriends> onlineUser = new HashMap<Integer, OnlineFriends>();
-
     public static Map<Integer, Channel> map = new HashMap<Integer, Channel>();
 
     TestMapper mapper;
@@ -61,12 +55,7 @@ public class ChatServerHandler extends SimpleChannelInboundHandler<Content> {
             OnlineFriends user = (OnlineFriends) msg;
             // 用户上线,将个人信息广播给其在线的好友
             if (user.getName() != null) {
-                // onlineUser.add(user);
                 onlineUser.put(user.getChannelId(), user);
-                // for (Entry<Integer, Channel> MapString : map.entrySet()) {
-                // Channel value = MapString.getValue();
-                // value.writeAndFlush(user);
-                // }
                 List<Friend> friends = mapper.fetchFriends(user.getChannelId());
                 if (!Util.isEmpty(friends)) {
                     for (Friend friend : friends) {
@@ -87,13 +76,6 @@ public class ChatServerHandler extends SimpleChannelInboundHandler<Content> {
                     value.writeAndFlush(user);
                 }
                 onlineUser.remove(user.getChannelId());
-                // for (int i = 0; i < onlineUser.size(); i++) {
-                // if (onlineUser.get(i).getChannelId() == user.getChannelId())
-                // {
-                // onlineUser.remove(i);
-                // }
-                // }
-
             }
         } else if (msg instanceof Content) {
             Content content = (Content) msg;

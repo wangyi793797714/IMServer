@@ -31,30 +31,6 @@ public class MainController {
     TestMapper mapper;
 
     @ResponseBody
-    @RequestMapping(value = "/online", method = RequestMethod.GET)
-    public ResponseEntity<List<Myself>> getOnlineUser(@RequestParam("n") int num) {
-        try {
-            List<Friend> friends = mapper.fetchFriends(num);
-            List<Myself> onlineFriends = new ArrayList<Myself>();
-            if (!Util.isEmpty(friends)) {
-                for (Friend friend : friends) {
-                    OnlineFriends friendOnline = ChatServerHandler.onlineUser.get(friend
-                            .getFriendNum());
-                    if (friendOnline != null) {
-                        Myself self = new Myself();
-                        self.setChannelId(friendOnline.getChannelId());
-                        self.setName(friendOnline.getName());
-                        onlineFriends.add(self);
-                    }
-                }
-            }
-            return new ResponseEntity<List<Myself>>(onlineFriends, HttpStatus.OK);
-        } catch (RuntimeException ex) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @ResponseBody
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public ResponseEntity<Myself> register(@RequestParam("u") String name,
             @RequestParam("p") String pass) {
@@ -168,34 +144,12 @@ public class MainController {
         }
     }
 
-    @ResponseBody
-    @RequestMapping(value = "/fetchFriend", method = RequestMethod.GET)
-    public ResponseEntity<?> fetchFriend(@RequestParam("n") int num) {
-        try {
-            List<Myself> friendList = new ArrayList<Myself>();
-            List<Friend> friends = mapper.fetchFriends(num);
-            if (!Util.isEmpty(friends)) {
-                for (Friend friend : friends) {
-                    Myself u = mapper.queryUser(friend.getFriendNum());
-                    if (u != null) {
-                        friendList.add(u);
-                    }
-                }
-            }
-            return new ResponseEntity<>(friendList, HttpStatus.OK);
-        } catch (RuntimeException ex) {
-            ex.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
     /**
-     * 	
-     *  @desc:返回好友列表，并且标示出哪些是在线的
-     *  @author WY  
-     *  创建时间 2014年3月20日 上午11:04:35
-     *  @param num
-     *  @return
+     * 
+     * @desc:返回好友列表，并且标示出哪些是在线的
+     * @author WY 创建时间 2014年3月20日 上午11:04:35
+     * @param num
+     * @return
      */
     @ResponseBody
     @RequestMapping(value = "/friend", method = RequestMethod.GET)
