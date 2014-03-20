@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"    
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="server.dao.TestMapper">
+  <select id="getUserId" parameterType="vo.Myself" resultType="vo.Myself">
+    SELECT * FROM T_USER WHERE NAME=#{name} AND
+    NUM=#{channelId}
+  </select>
+  <insert id="register" parameterType="vo.Myself" flushCache="true"
+    useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO
+    T_USER(num,name,pass) VALUES (#{channelId},#{name},#{pass})
+  </insert>
+  <select id="login" resultType="int">
+    SELECT count(*) FROM T_USER where
+    num=#{num} AND pass=#{pass}
+  </select>
+
+  <select id="queryUserIsExist" parameterType="vo.Myself"
+    resultType="vo.Myself">
+    SELECT NUM as channelId,NAME as name,Pass as pass FROM
+    T_USER where
+    num=#{num} AND pass=#{pass}
+  </select>
+
+  <insert id="addFriend" parameterType="vo.Friend" flushCache="true"
+    useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO
+    T_FRIENDS(USER_NUM,FRIEND_NUM,GROUP_ID) VALUES
+    (#{userNum},#{friendNum},#{groupId})
+  </insert>
+
+  <select id="queryUser" resultType="vo.Myself">
+    SELECT NUM as channelId,NAME
+    as name,Pass as pass FROM T_USER where
+    num=#{num}
+  </select>
+
+  <resultMap id="getFriend" type="vo.Friend">
+    <result column="USER_NUM" property="userNum" />
+    <result column="FRIEND_NUM" property="friendNum" />
+  </resultMap>
+
+  <select id="fetchFriends" parameterType="int" resultMap="getFriend">
+    SELECT
+    * FROM
+    T_FRIENDS where
+    USER_NUM=#{num}
+  </select>
+
+</mapper>  

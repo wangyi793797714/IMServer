@@ -1,0 +1,25 @@
+apply plugin: 'java'
+apply plugin: 'jetty'
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+compileJava.options.encoding = 'UTF-8'
+javadoc.options.encoding = 'UTF-8'
+
+jettyRun {
+    httpPort = 9527
+}
+
+dependencies {
+    compile 'io.netty:netty-all:4.0.12.Final'
+    compile 'org.springframework:spring-context:4.0.0.RELEASE'
+    compile 'org.springframework:spring-web:4.0.0.RELEASE'
+    compile 'org.springframework:spring-webmvc:4.0.0.RELEASE'
+    compile("org.codehaus.jackson:jackson-mapper-asl:1.9.13")
+    compile("org.codehaus.jackson:jackson-core-asl:1.9.13")
+    compile("org.mortbay.jetty:servlet-api:2.5.20110712")
+    compile("org.springframework:spring-jdbc:3.2.8.RELEASE")
+    compile("mysql:mysql-connector-java:5.1.29")
+    compile("org.mybatis:mybatis:3.2.5")
+    compile("org.mybatis:mybatis-spring:1.2.2")
+}
