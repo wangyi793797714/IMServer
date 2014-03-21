@@ -17,13 +17,13 @@ import server.util.Util;
 import vo.ChatRoom;
 import vo.Content;
 import vo.Friend;
-import vo.OnlineFriends;
+import vo.Friends;
 import vo.RoomChild;
 
 public class ChatServerHandler extends SimpleChannelInboundHandler<Content> {
 
     public static ChannelGroup channels = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
-    public static Map<Integer, OnlineFriends> onlineUser = new HashMap<Integer, OnlineFriends>();
+    public static Map<Integer, Friends> onlineUser = new HashMap<Integer, Friends>();
     public static Map<Integer, Channel> map = new HashMap<Integer, Channel>();
 
     TestMapper mapper;
@@ -51,15 +51,15 @@ public class ChatServerHandler extends SimpleChannelInboundHandler<Content> {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        if (msg instanceof OnlineFriends) {
-            OnlineFriends user = (OnlineFriends) msg;
+        if (msg instanceof Friends) {
+            Friends user = (Friends) msg;
             // 用户上线,将个人信息广播给其在线的好友
             if (user.getName() != null) {
                 onlineUser.put(user.getChannelId(), user);
                 List<Friend> friends = mapper.fetchFriends(user.getChannelId());
                 if (!Util.isEmpty(friends)) {
                     for (Friend friend : friends) {
-                        OnlineFriends friendOnline = ChatServerHandler.onlineUser.get(friend
+                        Friends friendOnline = ChatServerHandler.onlineUser.get(friend
                                 .getFriendNum());
                         if (friendOnline != null) {
                             map.get(friendOnline.getChannelId()).writeAndFlush(user);

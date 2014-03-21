@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,8 +21,10 @@ import server.util.Util;
 import vo.AddFriendRequest;
 import vo.AddFriendResponse;
 import vo.Friend;
+import vo.FriendBody;
+import vo.Friends;
 import vo.Myself;
-import vo.OnlineFriends;
+import vo.RoomChild;
 
 @Controller
 @RequestMapping("/api")
@@ -161,8 +164,7 @@ public class MainController {
             List<Myself> onlineFriends = new ArrayList<Myself>();
             if (!Util.isEmpty(friends)) {
                 for (Friend friend : friends) {
-                    OnlineFriends friendOnline = ChatServerHandler.onlineUser.get(friend
-                            .getFriendNum());
+                    Friends friendOnline = ChatServerHandler.onlineUser.get(friend.getFriendNum());
                     Myself self = null;
                     if (friendOnline != null) {
                         self = new Myself();
@@ -178,6 +180,24 @@ public class MainController {
             }
             return new ResponseEntity<List<Myself>>(onlineFriends, HttpStatus.OK);
         } catch (RuntimeException ex) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/addf2room", method = RequestMethod.POST)
+    public ResponseEntity<?> addFriend2room(@RequestBody FriendBody fb) {
+        try {
+            for (RoomChild roomChild : fb.getRoom().getChildDatas()) {
+                Channel channel = ChatServerHandler.map.get(roomChild.getChannelId());
+                // 如果为空，说明已经下线
+                if (channel != null) {
+                    channel.writeAndFlush(fb);
+                }
+            }
+            return new ResponseEntity<>("", HttpStatus.OK);
+        } catch (RuntimeException ex) {
+            ex.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
