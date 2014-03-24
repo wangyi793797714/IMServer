@@ -23,10 +23,14 @@ import vo.RoomChild;
 public class ChatServerHandler extends SimpleChannelInboundHandler<Content> {
 
     public static ChannelGroup channels = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
-    public static Map<Integer, Friends> onlineUser = new HashMap<Integer, Friends>();
-    public static Map<Integer, Channel> map = new HashMap<Integer, Channel>();
 
-    TestMapper mapper;
+    /** 用来保存所有的在线用户 */
+    public static Map<Integer, Friends> onlineUser = new HashMap<Integer, Friends>();
+
+    /** 用来保存所有的在线链接 */
+    public static Map<Integer, Channel> onlineMap = new HashMap<Integer, Channel>();
+
+    private TestMapper mapper;
 
     public ChatServerHandler(TestMapper mapper) {
         this.mapper = mapper;
@@ -62,16 +66,16 @@ public class ChatServerHandler extends SimpleChannelInboundHandler<Content> {
                         Friends friendOnline = ChatServerHandler.onlineUser.get(friend
                                 .getFriendNum());
                         if (friendOnline != null) {
-                            map.get(friendOnline.getChannelId()).writeAndFlush(user);
+                            onlineMap.get(friendOnline.getChannelId()).writeAndFlush(user);
                         }
                     }
                 }
-                map.put(user.getChannelId(), ctx.channel());
+                onlineMap.put(user.getChannelId(), ctx.channel());
             }
             // 用户下线,将个人信息广播给其他人
             else {
-                map.remove(user.getChannelId());
-                for (Entry<Integer, Channel> MapString : map.entrySet()) {
+                onlineMap.remove(user.getChannelId());
+                for (Entry<Integer, Channel> MapString : onlineMap.entrySet()) {
                     Channel value = MapString.getValue();
                     value.writeAndFlush(user);
                 }
@@ -83,24 +87,30 @@ public class ChatServerHandler extends SimpleChannelInboundHandler<Content> {
             if (content.getReceiveId() == 0) {
                 List<Integer> ids = content.getTargetIds();
                 for (int i = 0; i < ids.size(); i++) {
-                    if (map.get(ids.get(i)) != null) {
-                        map.get(ids.get(i)).writeAndFlush(msg);
+                    if (onlineMap.get(ids.get(i)) != null) {
+                        onlineMap.get(ids.get(i)).writeAndFlush(msg);
                     }
                 }
             }
             // 私聊
             else {
-                Channel c = map.get(content.getReceiveId());
-                c.writeAndFlush(content);
+                // 判断接受者是否在线
+                Channel c = onlineMap.get(content.getReceiveId());
+                if (c == null) {
+                    mapper.saveOfflineContent(content);
+                } else {
+                    c.writeAndFlush(content);
+                    mapper.saveHistoryContent(content);
+                }
             }
         }
-        // 创建聊天请求
+        // 创建聊天室请求
         else if (msg instanceof ChatRoom) {
             List<RoomChild> childs = ((ChatRoom) msg).getChildDatas();
             if (childs != null && childs.size() > 0) {
                 for (RoomChild child : childs) {
                     if (child.getChannelId() != ((ChatRoom) msg).getSendId()) {
-                        map.get(child.getChannelId()).writeAndFlush(msg);
+                        onlineMap.get(child.getChannelId()).writeAndFlush(msg);
                     }
                 }
             }

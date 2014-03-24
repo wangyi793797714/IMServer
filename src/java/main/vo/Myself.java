@@ -11,11 +11,11 @@ public class Myself implements Serializable {
 
     private String pass;
 
-    /**用户编号*/
+    /** 用户编号 */
     private int channelId;
 
     private boolean isOnline;
-    
+
     public String getName() {
         return name;
     }

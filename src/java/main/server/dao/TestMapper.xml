@@ -48,4 +48,44 @@
     USER_NUM=#{num}
   </select>
 
+  <insert id="saveOfflineContent" parameterType="vo.Content"
+    flushCache="true" useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO
+    T_OFFLINE_CONTENT
+    (SEND_NAME,RECEIVE_NAME,DATE,MSG,IS_SEND_MSG,RECEIVEID,SENDID,GROUPPTAG)
+    VALUES
+    (#{sendName},#{receiveName},#{date},#{msg},#{isSendMsg},#{receiveId},#{sendId},#{grouppTag})
+  </insert>
+
+  <insert id="saveHistoryContent" parameterType="vo.Content"
+    flushCache="true" useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO
+    T_HISTORY_CONTENT
+    (SEND_NAME,RECEIVE_NAME,DATE,MSG,IS_SEND_MSG,RECEIVEID,SENDID,GROUPPTAG)
+    VALUES
+    (#{sendName},#{receiveName},#{date},#{msg},#{isSendMsg},#{receiveId},#{sendId},#{grouppTag})
+  </insert>
+
+  <resultMap id="getOfflineMsgs" type="vo.Content">
+    <result column="SEND_NAME" property="sendName" />
+    <result column="RECEIVE_NAME" property="receiveName" />
+    <result column="DATE" property="date" />
+    <result column="MSG" property="msg" />
+    <result column="IS_SEND_MSG" property="isSendMsg" />
+    <result column="RECEIVEID" property="receiveId" />
+    <result column="SENDID" property="sendId" />
+    <result column="GROUPPTAG" property="grouppTag" />
+  </resultMap>
+
+  <select id="queryOfflineMsgs" parameterType="int" resultMap="getOfflineMsgs">
+    SELECT SEND_NAME as sendName,RECEIVE_NAME
+    as receiveName,DATE as
+    date,MSG as msg,RECEIVEID as receiveId,SENDID as sendId,GROUPPTAG as
+    grouppTag FROM T_OFFLINE_CONTENT where
+    RECEIVEID=#{num}
+  </select>
+
+  <delete id="deleteOfflineMsgs" parameterType="int">
+    DELETE FROM  T_OFFLINE_CONTENT WHERE RECEIVEID=#{num}
+  </delete>
 </mapper>  

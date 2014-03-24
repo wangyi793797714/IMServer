@@ -20,9 +20,11 @@ import server.netty4.ChatServerHandler;
 import server.util.Util;
 import vo.AddFriendRequest;
 import vo.AddFriendResponse;
+import vo.Content;
 import vo.Friend;
 import vo.FriendBody;
 import vo.Friends;
+import vo.LoginSucsess;
 import vo.Myself;
 import vo.RoomChild;
 
@@ -52,13 +54,17 @@ public class MainController {
 
     @ResponseBody
     @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public ResponseEntity<Myself> login(@RequestParam("n") int num, @RequestParam("p") String pass) {
+    public ResponseEntity<LoginSucsess> login(@RequestParam("n") int num, @RequestParam("p") String pass) {
         try {
-
             int result = mapper.login(num, pass);
             if (result == 1) {
+                LoginSucsess success= new LoginSucsess();
                 Myself self = mapper.queryUserIsExist(num, pass);
-                return new ResponseEntity<Myself>(self, HttpStatus.OK);
+                success.setMyself(self);
+                List<Content> offlineMsgs= mapper.queryOfflineMsgs(num);
+                success.setOfflineMsgs(offlineMsgs);
+                mapper.deleteOfflineMsgs(num);
+                return new ResponseEntity<LoginSucsess>(success, HttpStatus.OK);
             } else {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
@@ -94,7 +100,7 @@ public class MainController {
             req.setMyselfName(myselfName);
             req.setFriendNum(friendNum);
             req.setMyselfNum(myselfNum);
-            Channel channel = ChatServerHandler.map.get(friendNum);
+            Channel channel = ChatServerHandler.onlineMap.get(friendNum);
             if (channel == null) {
                 return new ResponseEntity<>("查找的好友不存在", HttpStatus.OK);
             } else {
@@ -118,20 +124,20 @@ public class MainController {
             Myself self = new Myself();
             self.setName(respName);
             resp.setRespFriend(self);
-            ChatServerHandler.map.get(targetNum).writeAndFlush(resp);
+            ChatServerHandler.onlineMap.get(targetNum).writeAndFlush(resp);
         } else {
             // 发送给请求方：被请求的人的信息
             AddFriendResponse resp1 = new AddFriendResponse();
             resp1.setAccept(true);
             resp1.setRespFriend(mapper.queryUser(respNum));
             resp1.setResponseName(respName);
-            ChatServerHandler.map.get(targetNum).writeAndFlush(resp1);
+            ChatServerHandler.onlineMap.get(targetNum).writeAndFlush(resp1);
 
             // 发送给被请求方：发送请求方的信息给被请求的人
             AddFriendResponse resp2 = new AddFriendResponse();
             resp2.setAccept(true);
             resp2.setRespFriend(mapper.queryUser(targetNum));
-            ChatServerHandler.map.get(respNum).writeAndFlush(resp2);
+            ChatServerHandler.onlineMap.get(respNum).writeAndFlush(resp2);
 
             Friend friend = new Friend();
             friend.setFriendNum(respNum);
@@ -189,7 +195,7 @@ public class MainController {
     public ResponseEntity<?> addFriend2room(@RequestBody FriendBody fb) {
         try {
             for (RoomChild roomChild : fb.getRoom().getChildDatas()) {
-                Channel channel = ChatServerHandler.map.get(roomChild.getChannelId());
+                Channel channel = ChatServerHandler.onlineMap.get(roomChild.getChannelId());
                 // 如果为空，说明已经下线
                 if (channel != null) {
                     channel.writeAndFlush(fb);

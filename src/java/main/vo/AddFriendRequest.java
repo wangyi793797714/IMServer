@@ -5,10 +5,13 @@ import java.io.Serializable;
 @SuppressWarnings("serial")
 public class AddFriendRequest implements Serializable {
 
+    /**申请人的名字*/
     private String myselfName;
 
-    private int FriendNum;
+    /**被申请者的编号*/
+    private int friendNum;
 
+    /**申请人的编号*/
     private int myselfNum;
 
     public String getMyselfName() {
@@ -20,11 +23,11 @@ public class AddFriendRequest implements Serializable {
     }
 
     public int getFriendNum() {
-        return FriendNum;
+        return friendNum;
     }
 
     public void setFriendNum(int friendNum) {
-        FriendNum = friendNum;
+        this.friendNum = friendNum;
     }
 
     public int getMyselfNum() {
