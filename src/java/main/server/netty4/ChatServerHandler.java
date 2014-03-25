@@ -84,11 +84,16 @@ public class ChatServerHandler extends SimpleChannelInboundHandler<Content> {
         } else if (msg instanceof Content) {
             Content content = (Content) msg;
             // 群发
-            if (content.getReceiveId() == 0) {
+            if (content.getGrouppTag()!= 0) {
                 List<Integer> ids = content.getTargetIds();
                 for (int i = 0; i < ids.size(); i++) {
+                    //指定的组员在线
                     if (onlineMap.get(ids.get(i)) != null) {
-                        onlineMap.get(ids.get(i)).writeAndFlush(msg);
+                        onlineMap.get(ids.get(i)).writeAndFlush(content);
+                    }else{
+                        content.setReceiveId(ids.get(i));
+                        mapper.saveOfflineContent(content);
+                        content.setReceiveId(0);
                     }
                 }
             }
