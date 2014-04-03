@@ -1,5 +1,6 @@
 apply plugin: 'java'
 apply plugin: 'jetty'
+apply plugin: 'eclipse'
 
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
@@ -10,6 +11,11 @@ jettyRun {
     httpPort = 9527
 }
 
+repositories {
+		mavenLocal()    
+		mavenCentral()
+	}
+	
 dependencies {
     compile 'io.netty:netty-all:4.0.12.Final'
     compile 'org.springframework:spring-context:4.0.0.RELEASE'
