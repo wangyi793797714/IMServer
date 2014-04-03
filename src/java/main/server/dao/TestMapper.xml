@@ -52,18 +52,18 @@
     flushCache="true" useGeneratedKeys="true" keyProperty="id">
     INSERT INTO
     T_OFFLINE_CONTENT
-    (SEND_NAME,RECEIVE_NAME,DATE,MSG,IS_SEND_MSG,RECEIVEID,SENDID,GROUPPTAG)
+    (SEND_NAME,RECEIVE_NAME,DATE,MSG,IS_SEND_MSG,RECEIVEID,SENDID,GROUPPTAG,BELONGTO)
     VALUES
-    (#{sendName},#{receiveName},#{date},#{msg},#{isSendMsg},#{receiveId},#{sendId},#{grouppTag})
+    (#{sendName},#{receiveName},#{date},#{msg},#{isSendMsg},#{receiveId},#{sendId},#{grouppTag},#{belongTo})
   </insert>
 
   <insert id="saveHistoryContent" parameterType="vo.Content"
     flushCache="true" useGeneratedKeys="true" keyProperty="id">
     INSERT INTO
     T_HISTORY_CONTENT
-    (SEND_NAME,RECEIVE_NAME,DATE,MSG,IS_SEND_MSG,RECEIVEID,SENDID,GROUPPTAG)
+    (SEND_NAME,RECEIVE_NAME,DATE,MSG,IS_SEND_MSG,RECEIVEID,SENDID,GROUPPTAG,BELONGTO)
     VALUES
-    (#{sendName},#{receiveName},#{date},#{msg},#{isSendMsg},#{receiveId},#{sendId},#{grouppTag})
+    (#{sendName},#{receiveName},#{date},#{msg},#{isSendMsg},#{receiveId},#{sendId},#{grouppTag},#{belongTo})
   </insert>
 
   <resultMap id="getOfflineMsgs" type="vo.Content">
@@ -75,6 +75,7 @@
     <result column="RECEIVEID" property="receiveId" />
     <result column="SENDID" property="sendId" />
     <result column="GROUPPTAG" property="grouppTag" />
+    <result column="BELONGTO" property="belongTo" />
   </resultMap>
 
   <select id="queryOfflineMsgs" parameterType="int" resultMap="getOfflineMsgs">

@@ -35,6 +35,9 @@ public class Content implements Serializable {
 
     /** 如果是群聊，那么指定当前的聊天内容是属于哪一聊天组的 */
     private long grouppTag;
+    
+    /**用来标示当前消息的归属，主要用于进入聊天界面显示最近的10条信息*/
+    private String belongTo;
 
     public Date getDate() {
         return date;
@@ -115,4 +118,13 @@ public class Content implements Serializable {
     public void setId(int id) {
         this.id = id;
     }
+
+    public String getBelongTo() {
+        return belongTo;
+    }
+
+    public void setBelongTo(String belongTo) {
+        this.belongTo = belongTo;
+    }
+    
 }
