@@ -39,6 +39,9 @@ public class Content implements Serializable {
     /**用来标示当前消息的归属，主要用于进入聊天界面显示最近的10条信息*/
     private String belongTo;
 
+    /**标示当前信息是否已经查阅*/
+    private String isRead;
+    
     public Date getDate() {
         return date;
     }
@@ -126,5 +129,12 @@ public class Content implements Serializable {
     public void setBelongTo(String belongTo) {
         this.belongTo = belongTo;
     }
-    
+
+    public String getIsRead() {
+        return isRead;
+    }
+
+    public void setIsRead(String isRead) {
+        this.isRead = isRead;
+    }
 }
