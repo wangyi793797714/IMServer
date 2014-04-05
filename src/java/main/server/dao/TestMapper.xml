@@ -2,93 +2,94 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"    
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="server.dao.TestMapper">
-  <select id="getUserId" parameterType="vo.Myself" resultType="vo.Myself">
-    SELECT * FROM T_USER WHERE NAME=#{name} AND
-    NUM=#{channelId}
-  </select>
-  <insert id="register" parameterType="vo.Myself" flushCache="true"
-    useGeneratedKeys="true" keyProperty="id">
-    INSERT INTO
-    T_USER(num,name,pass) VALUES (#{channelId},#{name},#{pass})
-  </insert>
-  <select id="login" resultType="int">
-    SELECT count(*) FROM T_USER where
-    num=#{num} AND pass=#{pass}
-  </select>
+	<select id="getUserId" parameterType="vo.Myself" resultType="vo.Myself">
+		SELECT * FROM T_USER WHERE NAME=#{name} AND
+		NUM=#{channelId}
+	</select>
+	<insert id="register" parameterType="vo.Myself" flushCache="true"
+		useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO
+		T_USER(num,name,pass) VALUES (#{channelId},#{name},#{pass})
+	</insert>
+	<select id="login" resultType="int">
+		SELECT count(*) FROM T_USER where
+		num=#{num} AND pass=#{pass}
+	</select>
 
-  <select id="queryUserIsExist" parameterType="vo.Myself"
-    resultType="vo.Myself">
-    SELECT NUM as channelId,NAME as name,Pass as pass FROM
-    T_USER where
-    num=#{num} AND pass=#{pass}
-  </select>
+	<select id="queryUserIsExist" parameterType="vo.Myself"
+		resultType="vo.Myself">
+		SELECT NUM as channelId,NAME as name,Pass as pass FROM
+		T_USER where
+		num=#{num} AND pass=#{pass}
+	</select>
 
-  <insert id="addFriend" parameterType="vo.Friend" flushCache="true"
-    useGeneratedKeys="true" keyProperty="id">
-    INSERT INTO
-    T_FRIENDS(USER_NUM,FRIEND_NUM,GROUP_ID) VALUES
-    (#{userNum},#{friendNum},#{groupId})
-  </insert>
+	<insert id="addFriend" parameterType="vo.Friend" flushCache="true"
+		useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO
+		T_FRIENDS(USER_NUM,FRIEND_NUM,GROUP_ID) VALUES
+		(#{userNum},#{friendNum},#{groupId})
+	</insert>
 
-  <select id="queryUser" resultType="vo.Myself">
-    SELECT NUM as channelId,NAME
-    as name,Pass as pass FROM T_USER where
-    num=#{num}
-  </select>
+	<select id="queryUser" resultType="vo.Myself">
+		SELECT NUM as channelId,NAME
+		as name,Pass as pass FROM T_USER where
+		num=#{num}
+	</select>
 
-  <resultMap id="getFriend" type="vo.Friend">
-    <result column="USER_NUM" property="userNum" />
-    <result column="FRIEND_NUM" property="friendNum" />
-  </resultMap>
+	<resultMap id="getFriend" type="vo.Friend">
+		<result column="USER_NUM" property="userNum" />
+		<result column="FRIEND_NUM" property="friendNum" />
+	</resultMap>
 
-  <select id="fetchFriends" parameterType="int" resultMap="getFriend">
-    SELECT
-    * FROM
-    T_FRIENDS where
-    USER_NUM=#{num}
-  </select>
+	<select id="fetchFriends" parameterType="int" resultMap="getFriend">
+		SELECT
+		* FROM
+		T_FRIENDS where
+		USER_NUM=#{num}
+	</select>
 
-  <insert id="saveOfflineContent" parameterType="vo.Content"
-    flushCache="true" useGeneratedKeys="true" keyProperty="id">
-    INSERT INTO
-    T_OFFLINE_CONTENT
-    (SEND_NAME,RECEIVE_NAME,DATE,MSG,IS_SEND_MSG,RECEIVEID,SENDID,GROUPPTAG,BELONGTO,ISREAD)
-    VALUES
-    (#{sendName},#{receiveName},#{date},#{msg},#{isSendMsg},#{receiveId},#{sendId},#{grouppTag},#{belongTo},#{isRead})
-  </insert>
+	<insert id="saveOfflineContent" parameterType="vo.Content"
+		flushCache="true" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO
+		T_OFFLINE_CONTENT
+		(SEND_NAME,RECEIVE_NAME,DATE,MSG,IS_SEND_MSG,RECEIVEID,SENDID,GROUPPTAG,BELONGTO,ISREAD,ISLOCALMSG)
+		VALUES
+		(#{sendName},#{receiveName},#{date},#{msg},#{isSendMsg},#{receiveId},#{sendId},#{grouppTag},#{belongTo},#{isRead},#{isLocalMsg})
+	</insert>
 
-  <insert id="saveHistoryContent" parameterType="vo.Content"
-    flushCache="true" useGeneratedKeys="true" keyProperty="id">
-    INSERT INTO
-    T_HISTORY_CONTENT
-    (SEND_NAME,RECEIVE_NAME,DATE,MSG,IS_SEND_MSG,RECEIVEID,SENDID,GROUPPTAG,BELONGTO,ISREAD)
-    VALUES
-    (#{sendName},#{receiveName},#{date},#{msg},#{isSendMsg},#{receiveId},#{sendId},#{grouppTag},#{belongTo},#{isRead})
-  </insert>
+	<insert id="saveHistoryContent" parameterType="vo.Content"
+		flushCache="true" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO
+		T_HISTORY_CONTENT
+		(SEND_NAME,RECEIVE_NAME,DATE,MSG,IS_SEND_MSG,RECEIVEID,SENDID,GROUPPTAG,BELONGTO,ISREAD,ISLOCALMSG)
+		VALUES
+		(#{sendName},#{receiveName},#{date},#{msg},#{isSendMsg},#{receiveId},#{sendId},#{grouppTag},#{belongTo},#{isRead},#{isLocalMsg})
+	</insert>
 
-  <resultMap id="getOfflineMsgs" type="vo.Content">
-    <result column="SEND_NAME" property="sendName" />
-    <result column="RECEIVE_NAME" property="receiveName" />
-    <result column="DATE" property="date" />
-    <result column="MSG" property="msg" />
-    <result column="IS_SEND_MSG" property="isSendMsg" />
-    <result column="RECEIVEID" property="receiveId" />
-    <result column="SENDID" property="sendId" />
-    <result column="GROUPPTAG" property="grouppTag" />
-    <result column="BELONGTO" property="belongTo" />
-    <result column="ISREAD" property="isRead" />
-  </resultMap>
+	<resultMap id="getOfflineMsgs" type="vo.Content">
+		<result column="SEND_NAME" property="sendName" />
+		<result column="RECEIVE_NAME" property="receiveName" />
+		<result column="DATE" property="date" />
+		<result column="MSG" property="msg" />
+		<result column="IS_SEND_MSG" property="isSendMsg" />
+		<result column="RECEIVEID" property="receiveId" />
+		<result column="SENDID" property="sendId" />
+		<result column="GROUPPTAG" property="grouppTag" />
+		<result column="BELONGTO" property="belongTo" />
+		<result column="ISREAD" property="isRead" />
+		<result column="ISLOCALMSG" property="isLocalMsg" />
+	</resultMap>
 
-  <select id="queryOfflineMsgs" parameterType="int" resultMap="getOfflineMsgs">
-    SELECT SEND_NAME as sendName,RECEIVE_NAME
-    as receiveName,DATE as
-    date,MSG as msg,RECEIVEID as receiveId,SENDID as sendId,GROUPPTAG as
-    grouppTag FROM T_OFFLINE_CONTENT where
-    RECEIVEID=#{num}
-  </select>
+	<select id="queryOfflineMsgs" parameterType="int" resultMap="getOfflineMsgs">
+		SELECT SEND_NAME as sendName,RECEIVE_NAME
+		as receiveName,DATE as
+		date,MSG as msg,RECEIVEID as receiveId,SENDID as sendId,GROUPPTAG as
+		grouppTag ,BELONGTO as belongTo,ISREAD as isRead, ISLOCALMSG as isLocalMsg FROM T_OFFLINE_CONTENT where
+		RECEIVEID=#{num}
+	</select>
 
-  <delete id="deleteOfflineMsgs" parameterType="int">
-    DELETE FROM
-    T_OFFLINE_CONTENT WHERE RECEIVEID=#{num}
-  </delete>
+	<delete id="deleteOfflineMsgs" parameterType="int">
+		DELETE FROM
+		T_OFFLINE_CONTENT WHERE RECEIVEID=#{num}
+	</delete>
 </mapper>  
