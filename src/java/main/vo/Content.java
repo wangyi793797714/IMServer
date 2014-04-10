@@ -45,6 +45,8 @@ public class Content implements Serializable {
 	/** 标示当前消息是否在本地已经存在 */
 	private String isLocalMsg = "false";
 
+	private String imageSrc;
+	
 	public Date getDate() {
 		return date;
 	}
