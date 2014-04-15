@@ -40,12 +40,17 @@ public class Content implements Serializable {
 	private String belongTo;
 
 	/** 标示当前信息是否已经查阅 */
-	private String isRead;
+	private String isRead = "false";
 
-	/** 标示当前消息是否在本地已经存在 */
+	/**标示当前消息是否在本地已经存在*/
 	private String isLocalMsg = "false";
 
-	private String imageSrc;
+	/**消息类型：0：文本，1：图片，2：语音*/
+	private int msgType;
+	
+	/**如果消息是图片或者语音那么对应在本地的Url*/
+	private String msgLocalUrl;
+	
 	
 	public Date getDate() {
 		return date;
@@ -151,4 +156,20 @@ public class Content implements Serializable {
 		this.isLocalMsg = isLocalMsg;
 	}
 
+	public int getMsgType() {
+		return msgType;
+	}
+
+	public void setMsgType(int msgType) {
+		this.msgType = msgType;
+	}
+
+	public String getMsgLocalUrl() {
+		return msgLocalUrl;
+	}
+
+	public void setMsgLocalUrl(String msgLocalUrl) {
+		this.msgLocalUrl = msgLocalUrl;
+	}
+	
 }

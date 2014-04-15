@@ -52,18 +52,18 @@
 		flushCache="true" useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO
 		T_OFFLINE_CONTENT
-		(SEND_NAME,RECEIVE_NAME,DATE,MSG,IS_SEND_MSG,RECEIVEID,SENDID,GROUPPTAG,BELONGTO,ISREAD,ISLOCALMSG)
+		(SEND_NAME,RECEIVE_NAME,DATE,MSG,IS_SEND_MSG,RECEIVEID,SENDID,GROUPPTAG,BELONGTO,ISREAD,ISLOCALMSG,MSGTYPE,MSGLOCALURL)
 		VALUES
-		(#{sendName},#{receiveName},#{date},#{msg},#{isSendMsg},#{receiveId},#{sendId},#{grouppTag},#{belongTo},#{isRead},#{isLocalMsg})
+		(#{sendName},#{receiveName},#{date},#{msg},#{isSendMsg},#{receiveId},#{sendId},#{grouppTag},#{belongTo},#{isRead},#{isLocalMsg},#{msgType},#{msgLocalUrl})
 	</insert>
 
 	<insert id="saveHistoryContent" parameterType="vo.Content"
 		flushCache="true" useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO
 		T_HISTORY_CONTENT
-		(SEND_NAME,RECEIVE_NAME,DATE,MSG,IS_SEND_MSG,RECEIVEID,SENDID,GROUPPTAG,BELONGTO,ISREAD,ISLOCALMSG)
+		(SEND_NAME,RECEIVE_NAME,DATE,MSG,IS_SEND_MSG,RECEIVEID,SENDID,GROUPPTAG,BELONGTO,ISREAD,ISLOCALMSG,MSGTYPE,MSGLOCALURL)
 		VALUES
-		(#{sendName},#{receiveName},#{date},#{msg},#{isSendMsg},#{receiveId},#{sendId},#{grouppTag},#{belongTo},#{isRead},#{isLocalMsg})
+		(#{sendName},#{receiveName},#{date},#{msg},#{isSendMsg},#{receiveId},#{sendId},#{grouppTag},#{belongTo},#{isRead},#{isLocalMsg},#{msgType},#{msgLocalUrl})
 	</insert>
 
 	<resultMap id="getOfflineMsgs" type="vo.Content">
@@ -78,13 +78,15 @@
 		<result column="BELONGTO" property="belongTo" />
 		<result column="ISREAD" property="isRead" />
 		<result column="ISLOCALMSG" property="isLocalMsg" />
+		<result column="MSGTYPE" property="msgType" />
+		<result column="MSGLOCALURL" property="msgLocalUrl" />
 	</resultMap>
 
 	<select id="queryOfflineMsgs" parameterType="int" resultMap="getOfflineMsgs">
 		SELECT SEND_NAME as sendName,RECEIVE_NAME
 		as receiveName,DATE as
 		date,MSG as msg,RECEIVEID as receiveId,SENDID as sendId,GROUPPTAG as
-		grouppTag ,BELONGTO as belongTo,ISREAD as isRead, ISLOCALMSG as isLocalMsg FROM T_OFFLINE_CONTENT where
+		grouppTag ,BELONGTO as belongTo,ISREAD as isRead, ISLOCALMSG as isLocalMsg,MSGTYPE as msgType, MSGLOCALURL as msgLocalUrl FROM T_OFFLINE_CONTENT where
 		RECEIVEID=#{num}
 	</select>
 
