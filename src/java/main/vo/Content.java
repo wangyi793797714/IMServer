@@ -51,7 +51,9 @@ public class Content implements Serializable {
 	/**如果消息是图片或者语音那么对应在本地的Url*/
 	private String msgLocalUrl;
 	
-	
+	/**消息唯一性*/
+    private String uuid;
+    
 	public Date getDate() {
 		return date;
 	}
@@ -171,5 +173,13 @@ public class Content implements Serializable {
 	public void setMsgLocalUrl(String msgLocalUrl) {
 		this.msgLocalUrl = msgLocalUrl;
 	}
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
 	
 }
