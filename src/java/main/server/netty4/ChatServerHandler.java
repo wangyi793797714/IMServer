@@ -5,6 +5,8 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.group.ChannelGroup;
 import io.netty.channel.group.DefaultChannelGroup;
+import io.netty.handler.timeout.IdleState;
+import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.util.concurrent.GlobalEventExecutor;
 
 import java.util.HashMap;
@@ -18,6 +20,7 @@ import vo.ChatRoom;
 import vo.Content;
 import vo.Friend;
 import vo.Friends;
+import vo.HeartbeatVo;
 import vo.RoomChild;
 
 public class ChatServerHandler extends SimpleChannelInboundHandler<Content> {
@@ -38,6 +41,7 @@ public class ChatServerHandler extends SimpleChannelInboundHandler<Content> {
 
     @Override
     public void channelActive(final ChannelHandlerContext ctx) throws Exception {
+    	System.out.println("上线hashCode:"+ctx.channel().hashCode());
         channels.add(ctx.channel());
     }
 
@@ -48,6 +52,26 @@ public class ChatServerHandler extends SimpleChannelInboundHandler<Content> {
         ctx.close();
     }
 
+    
+    /**心跳监测*/
+    @Override
+    public void userEventTriggered(ChannelHandlerContext ctx, Object evt)
+    		throws Exception {
+    	if(evt instanceof IdleStateEvent){
+    		 IdleStateEvent event = (IdleStateEvent) evt;
+             if (event.state().equals(IdleState.READER_IDLE)) {
+                 //读超时时间:服务器一定时间内未接受到客户端消息
+                 // 客户端掉线处理
+                 ctx.close();
+             } else if (event.state().equals(IdleState.WRITER_IDLE)) {
+                //写超时时间:服务器一定时间内向客户端发送消息
+             } else if (event.state().equals(IdleState.ALL_IDLE)) {
+            	 //全体超时时间:同时没有读写的时间
+             }
+    	}
+    	
+    	super.userEventTriggered(ctx, evt);
+    }
     @Override
     public boolean acceptInboundMessage(Object msg) throws Exception {
         return super.acceptInboundMessage(msg);
@@ -119,6 +143,9 @@ public class ChatServerHandler extends SimpleChannelInboundHandler<Content> {
                     }
                 }
             }
+        }else if(msg instanceof HeartbeatVo){
+        	HeartbeatVo vo=(HeartbeatVo) msg;
+        	System.out.println("收到了心跳信息:"+vo.getMsg());
         }
     }
 
