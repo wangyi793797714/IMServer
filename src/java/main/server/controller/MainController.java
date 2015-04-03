@@ -100,7 +100,7 @@ public class MainController {
             req.setMyselfName(myselfName);
             req.setFriendNum(friendNum);
             req.setMyselfNum(myselfNum);
-            Channel channel = ChatServerHandler.onlineMap.get(friendNum);
+            Channel channel = ChatServerHandler.onlineConnectes.get(friendNum);
             if (channel == null) {
                 return new ResponseEntity<>("查找的好友不存在", HttpStatus.OK);
             } else {
@@ -124,20 +124,20 @@ public class MainController {
             Myself self = new Myself();
             self.setName(respName);
             resp.setRespFriend(self);
-            ChatServerHandler.onlineMap.get(targetNum).writeAndFlush(resp);
+            ChatServerHandler.onlineConnectes.get(targetNum).writeAndFlush(resp);
         } else {
             // 发送给请求方：被请求的人的信息
             AddFriendResponse resp1 = new AddFriendResponse();
             resp1.setAccept(true);
             resp1.setRespFriend(mapper.queryUser(respNum));
             resp1.setResponseName(respName);
-            ChatServerHandler.onlineMap.get(targetNum).writeAndFlush(resp1);
+            ChatServerHandler.onlineConnectes.get(targetNum).writeAndFlush(resp1);
 
             // 发送给被请求方：发送请求方的信息给被请求的人
             AddFriendResponse resp2 = new AddFriendResponse();
             resp2.setAccept(true);
             resp2.setRespFriend(mapper.queryUser(targetNum));
-            ChatServerHandler.onlineMap.get(respNum).writeAndFlush(resp2);
+            ChatServerHandler.onlineConnectes.get(respNum).writeAndFlush(resp2);
 
             Friend friend = new Friend();
             friend.setFriendNum(respNum);
@@ -195,7 +195,7 @@ public class MainController {
     public ResponseEntity<?> addFriend2room(@RequestBody FriendBody fb) {
         try {
             for (RoomChild roomChild : fb.getRoom().getChildDatas()) {
-                Channel channel = ChatServerHandler.onlineMap.get(roomChild.getChannelId());
+                Channel channel = ChatServerHandler.onlineConnectes.get(roomChild.getChannelId());
                 // 如果为空，说明已经下线
                 if (channel != null) {
                     channel.writeAndFlush(fb);
